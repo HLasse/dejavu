@@ -47,6 +47,8 @@ FINGERPRINTS_TABLENAME = "fingerprints"
 FIELD_HASH = 'hash'
 FIELD_OFFSET = 'offset'
 
+
+
 # FINGERPRINTS CONFIG:
 # This is used as connectivity parameter for scipy.generate_binary_structure function. This parameter
 # changes the morphology mask when looking for maximum peaks on the spectrogram matrix.
@@ -99,4 +101,4 @@ PEAK_SORT = True
 FINGERPRINT_REDUCTION = 20
 
 # Number of results being returned for file recognition
-TOPN = 2
+TOPN = 4
