@@ -1,6 +1,6 @@
 import abc
 from typing import Dict, List, Tuple
-
+from psycopg2.extras import execute_values
 from dejavu.base_classes.base_database import BaseDatabase
 
 
@@ -154,7 +154,7 @@ class CommonDatabase(BaseDatabase, metaclass=abc.ABCMeta):
         """
         return self.query(None)
 
-    def insert_hashes(self, song_id: int, hashes: List[Tuple[str, int]], batch_size: int = 1000) -> None:
+    def insert_hashes(self, song_id: int, hashes: List[Tuple[str, int]], batch_size: int = 10000) -> None:
         """
         Insert a multitude of fingerprints.
 
@@ -167,11 +167,12 @@ class CommonDatabase(BaseDatabase, metaclass=abc.ABCMeta):
         values = [(song_id, hsh, int(offset)) for hsh, offset in hashes]
 
         with self.cursor() as cur:
-            for index in range(0, len(hashes), batch_size):
-                cur.executemany(self.INSERT_FINGERPRINT, values[index: index + batch_size])
+            execute_values(cur, self.INSERT_FINGERPRINT_V2, values, "(%s, decode(%s, 'hex'), %s)", batch_size) 
+            # for index in range(0, len(hashes), batch_size):
+            #     cur.executemany(self.INSERT_FINGERPRINT, values[index: index + batch_size])
 
     def return_matches(self, hashes: List[Tuple[str, int]],
-                       batch_size: int = 1000) -> Tuple[List[Tuple[int, int]], Dict[int, int]]:
+                       batch_size: int = 10000) -> Tuple[List[Tuple[int, int]], Dict[int, int]]:
         """
         Searches the database for pairs of (hash, offset) values.
 

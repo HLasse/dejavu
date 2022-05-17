@@ -58,6 +58,13 @@ class PostgreSQLDatabase(CommonDatabase):
         VALUES (%s, decode(%s, 'hex'), %s) ON CONFLICT DO NOTHING;
     """
 
+    INSERT_FINGERPRINT_V2 = f"""
+        INSERT INTO "{FINGERPRINTS_TABLENAME}" (
+                "{FIELD_SONG_ID}"
+            ,   "{FIELD_HASH}"
+            ,   "{FIELD_OFFSET}")
+        VALUES %s ON CONFLICT DO NOTHING;"""
+
     INSERT_SONG = f"""
         INSERT INTO "{SONGS_TABLENAME}" ("{FIELD_SONGNAME}", "{FIELD_FILE_SHA1}","{FIELD_TOTAL_HASHES}")
         VALUES (%s, decode(%s, 'hex'), %s)
